@@ -1,0 +1,10 @@
+Revision history for IP-IPwhere
+
+0.01  
+
+*新增加纯真数据,使用方法
+   perl qqip.pl 116.211.167.14
+*需要安装perl及扩展LWP::Simple ,JSON;
+*修正地址显示乱码,增加多ip查询
+
+

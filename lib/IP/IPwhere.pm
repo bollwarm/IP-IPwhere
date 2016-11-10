@@ -8,10 +8,9 @@ use LWP::Simple;
 use JSON;
 use Encode;
 
-
-
-our @ISA    = qw(Exporter);
-our @EXPORT = qw(squery query getTbeIParea getSinaIParea getBaiduIParea getPcoIParea);
+our @ISA = qw(Exporter);
+our @EXPORT =
+  qw(squery query getTbeIParea getSinaIParea getBaiduIParea getPcoIParea);
 
 =head1 NAME
 
@@ -34,7 +33,6 @@ Version 0.01
 
 our $VERSION = '0.01';
 
-
 =head1 SYNOPSIS
 
 Quick summary of what the module does.
@@ -48,63 +46,61 @@ print query(\@ARGV);
 
 =cut
 
-
 my %ipcache;
-my $DEBUG=0;
+my $DEBUG = 0;
 
 sub squery {
 
- my $ip=shift;
- my $result;
-   $result.=getTbeIParea($ip);
-   $result.=getSinaIParea($ip);
-   $result.=getBaiduIParea($ip);
-   $result.=getPcoIParea($ip);
- return $result;
+    my $ip = shift;
+    my $result;
+    $result .= getTbeIParea($ip);
+    $result .= getSinaIParea($ip);
+    $result .= getBaiduIParea($ip);
+    $result .= getPcoIParea($ip);
+    return $result;
 
 }
 
 sub query {
 
- my $ip=shift;
- my $result;
+    my $ip = shift;
+    my $result;
 
- for(validIP(@{$ip})){
+    for ( validIP( @{$ip} ) ) {
 
-   $result.=getTbeIParea($_);
-   $result.=getSinaIParea($_);
-   $result.=getBaiduIParea($_);
-   $result.=getPcoIParea($_);
- }
- return $result;
+        $result .= getTbeIParea($_);
+        $result .= getSinaIParea($_);
+        $result .= getBaiduIParea($_);
+        $result .= getPcoIParea($_);
+    }
+    return $result;
 }
 
-sub validIP(){
-my @ip=@_;
-my $re=qr([0-9]|[0-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]);
-my @oip=grep{/^($re\.){3}$re$/} @_;
-return @oip;
+sub validIP() {
+    my @ip  = @_;
+    my $re  = qr([0-9]|[0-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]);
+    my @oip = grep { /^($re\.){3}$re$/ } @_;
+    return @oip;
 }
 
 sub gbk2utf {
 
-  my $str=shift;
-  return encode("utf-8", decode("gbk", $str));
-  return;
+    my $str = shift;
+    return encode( "utf-8", decode( "gbk", $str ) );
+    return;
 
 }
 
-
 sub cached {
-    my $ip  = shift;
+    my $ip = shift;
     print "DEBUG\::cached\::IN $ip\n" if $DEBUG;
     return $ipcache{$ip} ? 1 : 0;
 }
 
 sub clear {
 
-    my $ip  = shift;
-   print "DEBUG\::clear\::IN $ip\n" if $DEBUG;
+    my $ip = shift;
+    print "DEBUG\::clear\::IN $ip\n" if $DEBUG;
     if ($ip) {
         undef $ipcache{$ip};
     }
@@ -113,84 +109,99 @@ sub clear {
     }
 }
 
-sub getBaiduIParea()
-{
+sub getBaiduIParea() {
 
-my $ip=shift;
-my $key="BD_".$ip;
-return  decode("gbk",$ipcache{$key}) if exists($ipcache{$key});
+    my $ip  = shift;
+    my $key = "BD_" . $ip;
+    return decode( "gbk", $ipcache{$key} ) if exists( $ipcache{$key} );
 
-my $url=qq(http://opendata.baidu.com/api.php?query=$ip&co=&resource_id=6006&t=1433920989928&ie=utf8&oe=gbk&format=json);
-my $code = get($url);
-#my $jso=$1 if $code =~/var remote_ip_info =(.*);$/;
-print $code,"\n"  if $DEBUG;
-my $json = new JSON;
-my $obj = $json->decode($code) if $code;
-print Dumper($obj),"\n" if $DEBUG;
-print "baidu $_:$obj->{msg}\n"  if $DEBUG;
-my $ipArea="baidu $ip:$obj->{data}->[0]->{location}\n";
-$ipcache{$key}=$ipArea;
-return  decode("gbk",$ipArea);
-}
-sub getPcoIParea()
-{
+    my $url =
+qq(http://opendata.baidu.com/api.php?query=$ip&co=&resource_id=6006&t=1433920989928&ie=utf8&oe=gbk&format=json);
+    my $code = get($url);
 
-my $ip=shift;
-my $key="pco_".$ip;
-return $ipcache{$key} if exists($ipcache{$key});
-#print $ip,"\n";
-my $url=qq(http://whois.pconline.com.cn/ipJson.jsp?callback=YSD&ip=$ip);
-my $code = get($url);
-#print $code,"\n";
-my $jso=$1 if $code =~/\{YSD\((.*)\)\;\}$/ms;
-#print $jso,"\n";
-my $json = new JSON;
-my $obj = $json->decode($jso) if $jso;
-#print Dumper($obj),"\n";
-#print "pconline $_:$obj->{msg}\n if $DEBUG";
-my $ipArea="pconline $ip:$obj->{pro},$obj->{city},$obj->{region},$obj->{addr}\n";
-$ipcache{$key}=$ipArea;
-return  $ipArea;
-}
-sub getSinaIParea()
-{
-my $ip=shift;
-my $key="SL_".$ip;
-return $ipcache{$key} if exists($ipcache{$key});
-my $url=qq(http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=$ip);
-my $code = get($url);
-my $jso=$1 if $code =~/var remote_ip_info =(.*);$/;
-#print $jso,"\n";
-my $json = new JSON;
-my $obj = $json->decode($jso);
-#print Dumper($obj),"\n";
-my $ipArea="sina $ip:$obj->{country},$obj->{province},$obj->{city},$obj->{isp}\n";
-$ipcache{$key}=$ipArea;
-return  $ipArea;
+    #my $jso=$1 if $code =~/var remote_ip_info =(.*);$/;
+    print $code, "\n" if $DEBUG;
+    my $json = new JSON;
+    my $obj = $json->decode($code) if $code;
+    print Dumper($obj), "\n" if $DEBUG;
+    print "baidu $_:$obj->{msg}\n" if $DEBUG;
+    my $ipArea = "baidu $ip:$obj->{data}->[0]->{location}\n";
+    $ipcache{$key} = $ipArea;
+    return decode( "gbk", $ipArea );
 }
 
-sub getTbeIParea(){
-my $ip=shift;
-my $key="TB_".$ip;
-unless (exists($ipcache{$key})){
-my $url=qq(http://ip.taobao.com/service/getIpInfo.php?ip=$ip);
-my $code = get($url);
-#print Dumper($code),"\n";
-my $json = new JSON;
-if ($code) { 
-my $obj = $json->decode($code);
-my $ipArea="taobao $obj->{data}->{ip}:$obj->{data}->{country},$obj->{data}->{region},$obj->{data}->{city},$obj->{data}->{isp}\n";
-$ipcache{$key}=$ipArea;
+sub getPcoIParea() {
 
-return $ipArea;
- }else {return}
-}else {
+    my $ip  = shift;
+    my $key = "pco_" . $ip;
+    return $ipcache{$key} if exists( $ipcache{$key} );
 
-  return $ipcache{$key};
+    #print $ip,"\n";
+    my $url  = qq(http://whois.pconline.com.cn/ipJson.jsp?callback=YSD&ip=$ip);
+    my $code = get($url);
+
+    #print $code,"\n";
+    my $jso = $1 if $code =~ /\{YSD\((.*)\)\;\}$/ms;
+
+    #print $jso,"\n";
+    my $json = new JSON;
+    my $obj = $json->decode($jso) if $jso;
+
+    #print Dumper($obj),"\n";
+    #print "pconline $_:$obj->{msg}\n if $DEBUG";
+    my $ipArea =
+      "pconline $ip:$obj->{pro},$obj->{city},$obj->{region},$obj->{addr}\n";
+    $ipcache{$key} = $ipArea;
+    return $ipArea;
+}
+
+sub getSinaIParea() {
+    my $ip  = shift;
+    my $key = "SL_" . $ip;
+    return $ipcache{$key} if exists( $ipcache{$key} );
+    my $url =
+      qq(http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=$ip);
+    my $code = get($url);
+    my $jso = $1 if $code =~ /var remote_ip_info =(.*);$/;
+
+    #print $jso,"\n";
+    my $json = new JSON;
+    my $obj  = $json->decode($jso);
+
+    #print Dumper($obj),"\n";
+    my $ipArea =
+      "sina $ip:$obj->{country},$obj->{province},$obj->{city},$obj->{isp}\n";
+    $ipcache{$key} = $ipArea;
+    return $ipArea;
+}
+
+sub getTbeIParea() {
+    my $ip  = shift;
+    my $key = "TB_" . $ip;
+    unless ( exists( $ipcache{$key} ) ) {
+        my $url  = qq(http://ip.taobao.com/service/getIpInfo.php?ip=$ip);
+        my $code = get($url);
+
+        #print Dumper($code),"\n";
+        my $json = new JSON;
+        if ($code) {
+            my $obj = $json->decode($code);
+            my $ipArea =
+"taobao $obj->{data}->{ip}:$obj->{data}->{country},$obj->{data}->{region},$obj->{data}->{city},$obj->{data}->{isp}\n";
+            $ipcache{$key} = $ipArea;
+
+            return $ipArea;
+        }
+        else { return }
+    }
+    else {
+
+        return $ipcache{$key};
+
+    }
 
 }
 
-}
 =head1 AUTHOR
 
 Orange, C<< <bollwarm at ijz.me> >>
@@ -244,4 +255,5 @@ Copyright 2016 Orange.
 This library is free software; you can redistribute it and/or modify
 it under the same terms as Perl itself.
 =cut
+
 1

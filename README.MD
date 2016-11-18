@@ -1,5 +1,5 @@
 
-##IP::IPwhere - IP address search whith baidu,taobao,sina,pconlie public IP API!
+##IP::IPwhere - IP address search from baidu,taobao,sina,pconlie public IP API!
 
 批量ip归属地查询，调用阿里新浪、百度和pconline ip库api接口,也可以增加纯真库，单独
 查询，没有整合到本模块中。
@@ -14,7 +14,7 @@
 ## useage：
     
     use IP::IPwhere;
-    print query(@ARGV);
+    print query(\@ARGV);
 
 
 ### 使用用方法： 

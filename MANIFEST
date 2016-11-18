@@ -1,12 +1,14 @@
 Changes
 example/ipwhere.pl
 example/IPwhere.pm
+example/qqip.pl
 example/qqip.png
 ignore.txt
 lib/IP/IPwhere.pm
 Makefile.PL
 MANIFEST			This list of files
 README
+README.MD
 t/00-load.t
 t/manifest.t
 t/pod-coverage.t

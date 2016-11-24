@@ -12,6 +12,7 @@ our @ISA = qw(Exporter);
 our @EXPORT =
   qw(squery query getTbeIParea getSinaIParea getBaiduIParea getPcoIParea);
 
+=encoding utf8
 =head1 NAME
 
 IP::IPwhere - IP address search whith baidu,taobao,sina,pconlie public IP API!
@@ -27,11 +28,11 @@ IP::IPwhere - IP address search whith baidu,taobao,sina,pconlie public IP API!
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
@@ -41,8 +42,19 @@ use IP::IPwhere;
 print query(\@ARGV);
 
 
-=head1 EXPORT
+=head1 METHODS
+ 
+=head2 squery( $IP )
+ 
+Returns the result of query. 
+ 
+=head2 query(\@ipArr)
+ 
+Returns the result of query for mutis IP whith the style of array res.
+ 
+=head2  getXXXIParea
 
+Returns the result of query of the special web API,include tabao,sina,baidu and pconline.
 
 =cut
 
@@ -143,12 +155,9 @@ sub getPcoIParea() {
     #print $code,"\n";
     my $jso = $1 if $code =~ /\{YSD\((.*)\)\;\}$/ms;
 
-    #print $jso,"\n";
     my $json = new JSON;
     my $obj = $json->decode($jso) if $jso;
 
-    #print Dumper($obj),"\n";
-    #print "pconline $_:$obj->{msg}\n if $DEBUG";
     my $ipArea =
       "pconline $ip:$obj->{pro},$obj->{city},$obj->{region},$obj->{addr}\n";
     $ipcache{$key} = $ipArea;

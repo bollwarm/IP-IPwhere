@@ -3,7 +3,6 @@ use warnings;
 use strict;
 use Carp;
 use Encode;
-use utf8;
 
 my %cache;
 my $ip_start;

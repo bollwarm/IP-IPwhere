@@ -64,17 +64,8 @@ my $DEBUG = 0;
 
 sub squery {
 
-    my $ip = shift;
-    return "本机地址\n" if $ip=~/127\.0/;
-    return "缺省网关地址\n" if $ip=~/0\./;
-    return "广播地址\n" if $ip=~/255\.255\.255\.255/;
-    return "本地内网地址\n" if $ip=~/[224-239]\./;
-    return "本地内网地址\n" if $ip=~/10\./;
-    return "本地内网地址\n" if $ip=~/192\.168/;
-    return "本地内网地址\n" if $ip=~/172\.16/;
-    return "非法内网地址\n" if $ip=~/192\.254/;
-    return "非法地址\n" if $ip=~/192\.0\.2/;
-    
+    my $ip =vpIP(shift);
+    return $ip if $ip=~/^IANA/;
     my $result;
     $result .= getTbeIParea($ip);
     $result .= getSinaIParea($ip);
@@ -84,6 +75,23 @@ sub squery {
 
 }
 
+sub vpIP {
+  my $ip=shift;
+  my $re  = qr([0-9]|[0-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]);
+    
+    return "IANA非法ip" unless  $ip=~$re;
+    return "IANA本机地址\n" if $ip=~/127\./;
+    return "IANA缺省网关地址\n" if $ip=~/0\./;
+    return "IANA广播地址\n" if $ip=~/255\.255\.255\.255/;
+    return "IANA组播地址\n" if $ip=~/(22[4-9]|23[1-9]\.)/;
+    return "IANA本地内网地址\n" if $ip=~/10\./;
+    return "IANA本地内网地址\n" if $ip=~/192\.168/;
+    return "IANA本地内网地址\n" if $ip=~/172\.16/;
+    return "IANA保留地址\n" if $ip=~/169\.254/;
+    return "IANA保留地址\n" if $ip=~/(24[0-9]|25[1-5])/;
+    return $ip;
+
+ }
 sub query {
 
     my $ip = shift;

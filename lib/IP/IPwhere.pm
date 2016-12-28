@@ -7,6 +7,7 @@ use Data::Dumper;
 use LWP::Simple;
 use JSON;
 use Encode;
+use utf8;
 
 our @ISA = qw(Exporter);
 our @EXPORT =
@@ -28,11 +29,11 @@ IP::IPwhere - IP address search whith baidu,taobao,sina,pconlie public IP API!
 
 =head1 VERSION
 
-Version 0.03
+Version 0.04
 
 =cut
 
-our $VERSION = '0.03';
+our $VERSION = '0.04';
 
 =head1 SYNOPSIS
 
@@ -64,6 +65,16 @@ my $DEBUG = 0;
 sub squery {
 
     my $ip = shift;
+    return "本机地址\n" if $ip=~/127\.0/;
+    return "缺省网关地址\n" if $ip=~/0\./;
+    return "广播地址\n" if $ip=~/255\.255\.255\.255/;
+    return "本地内网地址\n" if $ip=~/[224-239]\./;
+    return "本地内网地址\n" if $ip=~/10\./;
+    return "本地内网地址\n" if $ip=~/192\.168/;
+    return "本地内网地址\n" if $ip=~/172\.16/;
+    return "非法内网地址\n" if $ip=~/192\.254/;
+    return "非法地址\n" if $ip=~/192\.0\.2/;
+    
     my $result;
     $result .= getTbeIParea($ip);
     $result .= getSinaIParea($ip);

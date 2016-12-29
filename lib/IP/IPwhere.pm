@@ -80,15 +80,15 @@ sub vpIP {
   my $re  = qr([0-9]|[0-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]);
     
     return "IANA非法ip" unless  $ip=~$re;
-    return "IANA本机地址\n" if $ip=~/127\./;
-    return "IANA缺省网关地址\n" if $ip=~/0\./;
-    return "IANA广播地址\n" if $ip=~/255\.255\.255\.255/;
-    return "IANA组播地址\n" if $ip=~/(22[4-9]|23[1-9]\.)/;
-    return "IANA本地内网地址\n" if $ip=~/10\./;
-    return "IANA本地内网地址\n" if $ip=~/192\.168/;
-    return "IANA本地内网地址\n" if $ip=~/172\.16/;
-    return "IANA保留地址\n" if $ip=~/169\.254/;
-    return "IANA保留地址\n" if $ip=~/(24[0-9]|25[1-5])/;
+    return "IANA本机地址\n" if $ip=~/^127\./;
+    return "IANA缺省网关地址\n" if $ip=~/^0\./;
+    return "IANA广播地址\n" if $ip=~/^255\.255\.255\.255/;
+    return "IANA组播地址\n" if $ip=~/^2(2[4-9]|3[1-9]\.)/;
+    return "IANA本地内网地址\n" if $ip=~/^10\./;
+    return "IANA本地内网地址\n" if $ip=~/^192\.168/;
+    return "IANA本地内网地址\n" if $ip=~/^172\.16/;
+    return "IANA保留地址\n" if $ip=~/^169\.254/;
+    return "IANA保留地址\n" if $ip=~/^2(4[0-9]|5[1-5])/;
     return $ip;
 
  }

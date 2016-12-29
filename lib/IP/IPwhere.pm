@@ -29,11 +29,11 @@ IP::IPwhere - IP address search whith baidu,taobao,sina,pconlie public IP API!
 
 =head1 VERSION
 
-Version 0.04
+Version 0.05
 
 =cut
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 =head1 SYNOPSIS
 
@@ -153,7 +153,7 @@ qq(http://opendata.baidu.com/api.php?query=$ip&co=&resource_id=6006&t=1433920989
     #my $jso=$1 if $code =~/var remote_ip_info =(.*);$/;
     print $code, "\n" if $DEBUG;
     my $json = new JSON;
-    my $obj = $json->decode($code) if $code;
+    my $obj = $json->decode($code) if defined $code;
     print Dumper($obj), "\n" if $DEBUG;
     print "baidu $_:$obj->{msg}\n" if $DEBUG;
     my $ipArea = "baidu $ip:$obj->{data}->[0]->{location}\n";
@@ -212,10 +212,10 @@ sub getTbeIParea() {
 
         #print Dumper($code),"\n";
         my $json = new JSON;
-        if ($code) {
+        if (defined $code) {
             my $obj = $json->decode($code);
             my $ipArea =
-"taobao $obj->{data}->{ip}:$obj->{data}->{country},$obj->{data}->{region},$obj->{data}->{city},$obj->{data}->{isp}\n";
+"taobao $ip:$obj->{data}->{country},$obj->{data}->{region},$obj->{data}->{city},$obj->{data}->{isp}\n";
             $ipcache{$key} = $ipArea;
 
             return $ipArea;

@@ -35,7 +35,9 @@
     pconline 203.123.123.123:,,, 澳大利亚
 
 ### Mojo::webqq插件，我们也提供一个Mojo::webqq插件，见example
-目录。通过本插件可以通过qq，QQ群，以及微信，交互式查询ip归属地。
+目录。
+
+通过本插件可以通过qq，QQ群，以及微信，交互式查询ip归属地。
 [Mojo-Webqq-IPwhere插件](https://git.oschina.net/ijz/Mojo-Webqq-IPwhere)
 
 ![qqipwhere](example/qqip.png)

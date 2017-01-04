@@ -191,12 +191,8 @@ sub getSinaIParea() {
       qq(http://int.dpool.sina.com.cn/iplookup/iplookup.php?format=js&ip=$ip);
     my $code = get($url);
     my $jso = $1 if $code =~ /var remote_ip_info =(.*);$/;
-
-    #print $jso,"\n";
     my $json = new JSON;
     my $obj  = $json->decode($jso);
-
-    #print Dumper($obj),"\n";
     my $ipArea =
       "sina $ip:$obj->{country},$obj->{province},$obj->{city},$obj->{isp}\n";
     $ipcache{$key} = $ipArea;

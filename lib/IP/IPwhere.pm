@@ -205,8 +205,6 @@ sub getTbeIParea() {
     unless ( exists( $ipcache{$key} ) ) {
         my $url  = qq(http://ip.taobao.com/service/getIpInfo.php?ip=$ip);
         my $code = get($url);
-
-        #print Dumper($code),"\n";
         my $json = new JSON;
         if (defined $code) {
             my $obj = $json->decode($code);

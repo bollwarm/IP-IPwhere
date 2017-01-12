@@ -5,11 +5,8 @@
 查询，没有整合到本模块中。
 
 试用方法： ./ipwhere.pl 8.8.8.8 8.8.8.6
-
 需要安装perl及扩展LWP::Simple；use JSON;
-
 建议通过cpanm LWP::Simple JSON 一键安装。
-
 
 ## useage：
     

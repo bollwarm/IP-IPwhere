@@ -33,7 +33,7 @@ Version 0.05
 
 =cut
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 =head1 SYNOPSIS
 
@@ -68,7 +68,7 @@ sub squery {
     return $ip if $ip=~/^IANA/;
     my $result;
     $result .= getTbeIParea($ip);
-    $result .= getSinaIParea($ip);
+    #$result .= getSinaIParea($ip);
     $result .= getBaiduIParea($ip);
     $result .= getPcoIParea($ip);
     return $result;
@@ -100,7 +100,7 @@ sub query {
     for ( validIP( @{$ip} ) ) {
 
         $result .= getTbeIParea($_);
-        $result .= getSinaIParea($_);
+       # $result .= getSinaIParea($_);
         $result .= getBaiduIParea($_);
         $result .= getPcoIParea($_);
     }
